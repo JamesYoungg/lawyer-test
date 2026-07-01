@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <meta name="theme-color" content="#17211a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="律师人格实验室">
+
+    <title>律师抓马人格测试 - 9 种赛博律师人格，你是哪一种？</title>
+    <meta name="description"
+        content="3 分钟测出你的律师人格。11 种人格画像，从红圈推土机到流浪律师，7 维度深度建模，毒舌判词直击灵魂。免费、无广告、无需注册。" />
+    <meta name="keywords"
+        content="律师人格测试,律师性格测试,MBTI平替,赛博律师,律师类型,法律人测试,红圈律所,刑事辩护,毒舌测试,流浪律师" />
+
+    <meta name="applicable-device" content="pc,mobile" />
+    <meta name="author" content="法与码实验室" />
+    <meta name="robots" content="index, follow" />
+
+    <link rel="canonical" href="/" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;700;800;900&family=Noto+Serif+SC:wght@600;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/style.css?v=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="/js/app.js?v=1.0"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="律师人格实验室" />
+    <meta property="og:title" content="律师抓马人格测试 - 9 种赛博律师人格" />
+    <meta property="og:description" content="3 分钟测出你是红圈推土机还是外卖法师。毒舌判词，欢迎对号入座。" />
+</head>
+
+<body>
+    <nav class="global-nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-logo">
+                <span class="logo-mark">⚖</span>
+                律师人格实验室
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link nav-link--active">首页</a>
+                <a href="#test" id="navStartBtn" class="nav-link nav-cta">开始测试 ⚡</a>
+            </div>
+            <button class="nav-hamburger" id="navHamburger" aria-label="菜单">☰</button>
+        </div>
+        <div class="nav-mobile-menu" id="navMobileMenu">
+            <a href="/" class="nav-mobile-link">🏠 首页</a>
+            <a href="#test" id="navMobileStartBtn" class="nav-mobile-link nav-mobile-cta">⚡ 立即开始测试</a>
+        </div>
+    </nav>
+
+    <main class="page-shell">
+        <!-- ═══ 首屏 Hero ═══ -->
+        <section id="intro" class="screen active">
+            <div class="index-hero-banner">
+                <div class="hero-glow-orb orb-1"></div>
+                <div class="hero-glow-orb orb-2"></div>
+
+                <div class="index-hero-content">
+                    <div class="hero-eyebrow">
+                        <span class="pulse-dot"></span>
+                        11 种人格 · 7 维向量 · 毒舌判词
+                    </div>
+
+                    <h1 class="index-hero-title" data-text="律师抓马人格测试">律师抓马人格测试</h1>
+                    <p class="index-hero-sub">
+                        3 分钟，20 道题，测出你是 <strong>红圈庭审推土机</strong> 还是
+                        <strong>流浪律师</strong>。7 维向量精准匹配，毒舌判词直击灵魂。
+                    </p>
+
+                    <!-- 性别选择 -->
+                    <div class="gender-selector">
+                        <div class="gender-selector-label">选择你的性别</div>
+                        <div class="gender-btns">
+                            <button class="gender-btn" data-gender="male">
+                                <span class="gender-icon">♂</span>
+                                <span class="gender-text">男律师</span>
+                            </button>
+                            <button class="gender-btn" data-gender="female">
+                                <span class="gender-icon">♀</span>
+                                <span class="gender-text">女律师</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="index-hero-actions">
+                        <button id="startBtn" class="hero-btn-primary">⚡ 立即开始测试 <span>(约 2 分钟)</span></button>
+                        <button id="freshStartBtn" class="hero-btn-secondary" style="display: none;">🔄 从头重新测试</button>
+                    </div>
+
+                    <div class="hero-counter-strip">
+                        <div class="fire-icon">⚖️</div>
+                        <div class="counter-text">
+                            <span class="counter-label">免费 · 无广告 · 无需注册 · 数据不出浏览器</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9 种人格预览 -->
+            <div class="feature-showcase-title">
+                <h2>11 种人格图鉴 <span>PERSONAS</span></h2>
+                <p class="feature-showcase-hint">点击卡片查看详细人格档案</p>
+            </div>
+            <div class="persona-preview-grid" id="personaPreviewGrid"></div>
+
+            <div class="bento-disclaimer">
+                💡 <strong>测试说明：</strong>本测试纯属娱乐，毒舌判词不代表任何专业职业评价。
+                测出来的"酒肉战神"和"受气包"也不要当真——毕竟真正的律师都要通过法考。
+            </div>
+        </section>
+
+        <!-- ═══ 测试页 ═══ -->
+        <section id="test" class="screen">
+            <div class="test-wrap card">
+                <div class="topbar">
+                    <div class="progress"><span id="progressBar"></span></div>
+                    <div class="progress-text" id="progressText">0 / 15</div>
+                </div>
+
+                <div id="questionList" class="question-list"></div>
+
+                <div class="actions-bottom">
+                    <div class="hint" id="testHint">系统会在提交时帮你检查遗漏选项。</div>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                        <button id="backIntroBtn" class="btn-secondary">返回首页</button>
+                        <button id="submitBtn" class="btn-primary">提交并查看结果</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ 结果页 ═══ -->
+        <section id="result" class="screen">
+            <div class="result-wrap card">
+                <div class="result-layout">
+                    <div class="result-top">
+                        <div class="type-box">
+                            <div class="type-kicker" id="resultModeKicker">你的律师人格</div>
+                            <div class="type-name" id="resultTypeName">HCIP（红圈庭审推土机）</div>
+                            <div class="match" id="matchBadge">匹配度 92%</div>
+
+                            <!-- 头像占位 -->
+                            <div id="resultAvatar" class="result-avatar-wrap"></div>
+
+                            <!-- 天选业务 -->
+                            <div id="resultTag" class="result-tag">🎯 天选业务: 大标的商事诉讼</div>
+
+                            <button id="shareResultBtnTop" class="btn-primary"
+                                style="background: var(--accent-strong); border: none; padding: 10px 24px; font-size: 14px; border-radius: 50px; width: 100%; margin-top: 16px;">
+                                📤 分享我的律师人格给朋友
+                            </button>
+
+                            <div class="type-subname" id="resultTypeSub">系统备注会显示在这里。</div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-box">
+                        <h3>毒舌判词</h3>
+                        <p id="resultDesc" class="result-desc"></p>
+                    </div>
+
+                    <div class="secondary-types-grid">
+                        <div class="secondary-type-card">
+                            <div class="secondary-label">🎭 你的第二人格</div>
+                            <div class="secondary-name" id="secondTypeName">—</div>
+                            <div class="secondary-note">很多人是两种人格的混合体</div>
+                        </div>
+                        <div class="secondary-type-card secondary-worst">
+                            <div class="secondary-label">🚫 你最不像的律师</div>
+                            <div class="secondary-name" id="worstTypeName">—</div>
+                            <div class="secondary-note">恭喜，没活成那样</div>
+                        </div>
+                    </div>
+
+                    <div class="dim-box">
+                        <h3>七维度评分</h3>
+                        <div class="radar-chart-container">
+                            <canvas id="resultRadarChart"></canvas>
+                        </div>
+                        <div id="dimList" class="dim-list"></div>
+                    </div>
+
+                    <div class="note-box">
+                        <h3>友情提示</h3>
+                        <p>本测试仅供娱乐，别拿它当职业选择、面试、相亲、分手、招魂、算命或人生判决书。</p>
+                    </div>
+                </div>
+
+                <div class="result-actions">
+                    <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content: center;">
+                        <button id="shareResultBtn" class="btn-primary"
+                            style="background: var(--accent-strong); border: none;">📤 分享我的律师人设</button>
+                        <button id="restartBtn" class="btn-secondary">重新测试</button>
+                        <button id="toTopBtn" class="btn-primary">回到首页</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // 移动端汉堡菜单
+        const hamburger = document.getElementById('navHamburger');
+        if (hamburger) {
+            hamburger.addEventListener('click', function () {
+                document.getElementById('navMobileMenu').classList.toggle('active');
+            });
+        }
+    </script>
+
+    <!-- 人格详情弹窗 -->
+    <div class="persona-modal-overlay" id="personaModal">
+        <div class="persona-modal-content">
+            <button class="persona-modal-close" id="personaModalClose" aria-label="关闭">✕</button>
+            <div class="persona-modal-header">
+                <div class="persona-modal-code" id="personaModalCode">HCIP</div>
+                <div class="persona-modal-cn" id="personaModalCn">红圈庭审推土机</div>
+                <div class="persona-modal-tag" id="personaModalTag">大标的商事诉讼</div>
+            </div>
+            <div class="persona-modal-body">
+                <div class="persona-modal-intro" id="personaModalIntro">你不是在辩护，你是在执行死刑。</div>
+                <div class="persona-modal-desc" id="personaModalDesc">详细描述加载中...</div>
+                <div class="dim-radar-wrap">
+                    <canvas id="personaRadarChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 海报分享模态框 -->
+    <div class="share-modal" id="posterModal">
+        <div class="share-card-container">
+            <div id="mainPosterCard" class="poster-capture-area">
+                <div class="poster-card-header">
+                    <div class="poster-logo">⚖ 律师人格实验室</div>
+                    <div class="poster-date" id="posterDate">2026.06.30</div>
+                </div>
+
+                <div class="poster-card-body">
+                <div class="poster-char-glow"></div>
+
+                <!-- 头像占位 -->
+                <div id="posterAvatar" class="poster-avatar-wrap"></div>
+
+                <div class="poster-char-block">
+                    <div class="poster-char-title" id="posterCharTitle">HCIP · 红圈庭审推土机</div>
+                    <div class="poster-char-desc" id="posterCharDesc">毒舌判词加载中...</div>
+                </div>
+
+                <!-- 天选业务 -->
+                <div id="posterTag" class="poster-tag">🎯 天选业务: 大标的商事诉讼</div>
+
+                <div class="poster-radar-wrap">
+                    <canvas id="posterRadarChart"></canvas>
+                </div>
+
+                <div class="poster-info-box">
+                    <div class="poster-desc" id="posterDescText">一句话判词</div>
+                </div>
+                </div>
+
+                <div class="poster-card-footer">
+                    <div class="poster-footer-left">
+                        <div class="poster-url">律师人格测试</div>
+                        <div class="poster-slogan">测出你的赛博律师人设</div>
+                    </div>
+                    <div class="poster-qr">
+                        <span class="poster-qr-mark">⚖</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button id="downloadPosterBtn" class="btn-download">🔥 长按下方图片保存，或点我下载</button>
+                <button id="closePosterBtn" class="btn-close-modal">取消</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
