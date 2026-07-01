@@ -747,18 +747,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const navStartHandler = (e) => {
         e.preventDefault();
         resumeOrStartTest();
-        const menu = document.getElementById('navMobileMenu');
-        if (menu) menu.classList.remove('active');
     };
     bindBtn('navStartBtn', navStartHandler);
-    bindBtn('navMobileStartBtn', navStartHandler);
-
-    const hamburger = document.getElementById('navHamburger');
-    if (hamburger) {
-        hamburger.addEventListener('click', function () {
-            document.getElementById('navMobileMenu').classList.toggle('active');
-        });
-    }
 
     if (!history.state || !history.state.screen) {
         history.replaceState({ screen: 'intro' }, '', window.location.pathname + window.location.search);
