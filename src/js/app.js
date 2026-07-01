@@ -405,6 +405,9 @@ function handleSubmit() {
         setTimeout(updateProgress, 3000);
         return;
     }
+
+    // 提交成功：清空状态，确保返回首页不再显示"继续上次"
+    clearState();
     renderResult();
 }
 
@@ -694,7 +697,10 @@ document.addEventListener('DOMContentLoaded', () => {
         clearState();
         startTest();
     });
-    bindBtn('toTopBtn', () => showScreen('intro'));
+    bindBtn('toTopBtn', () => {
+        clearState();
+        showScreen('intro');
+    });
     bindBtn('shareResultBtn', executeResultShare);
     bindBtn('shareResultBtnTop', executeResultShare);
     bindBtn('downloadPosterBtn', savePosterAsImage);
