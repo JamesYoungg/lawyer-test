@@ -160,7 +160,10 @@ function renderPersonaPreview() {
             ? `<div class="preview-avatar egg-avatar"><span>❓</span></div>`
             : (() => {
                 const g = selectedGender === 'female' ? 'female' : 'male';
-                return `<div class="preview-avatar"><img src="/avatars/${p.code}_${g}.png" alt="${displayCn}" class="preview-avatar-img" onerror="this.style.display='none'"></div>`;
+                return `<div class="preview-avatar"><picture>
+                    <source srcset="/avatars_webp/${p.code}_${g}.webp" type="image/webp">
+                    <img src="/avatars/${p.code}_${g}.png" alt="${displayCn}" class="preview-avatar-img" loading="lazy" onerror="this.style.display='none'">
+                </picture></div>`;
               })();
 
         return `
@@ -463,8 +466,11 @@ function renderResult() {
         const avatarPath = `/avatars/${type.code}_${g}.png`;
         resultAvatar.innerHTML = `
             <div class="avatar-frame avatar-${g}">
-                <img src="${avatarPath}" alt="${texts.finalType.cn}" class="avatar-img"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                <picture>
+                    <source srcset="/avatars_webp/${type.code}_${g}.webp" type="image/webp">
+                    <img src="${avatarPath}" alt="${texts.finalType.cn}" class="avatar-img"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                </picture>
                 <div class="avatar-placeholder" style="display:none">
                     <span class="avatar-gender-icon">${g === 'female' ? '♀' : '♂'}</span>
                 </div>
@@ -578,8 +584,10 @@ function openShareModal(result) {
         const avatarPath = `/avatars/${type.code}_${g}.png`;
         posterAvatar.innerHTML = `
             <div class="poster-avatar-frame avatar-${g}">
-                <img src="${avatarPath}" alt="${texts.cn}" class="poster-avatar-img"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                <picture>
+                    <source srcset="/avatars_webp/${type.code}_${g}.webp" type="image/webp">
+                    <img src="${avatarPath}" alt="${texts.cn}" class="poster-avatar-img"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
                 <div class="poster-avatar-placeholder" style="display:none">
                     <span class="avatar-gender-icon">${g === 'female' ? '♀' : '♂'}</span>
                 </div>
