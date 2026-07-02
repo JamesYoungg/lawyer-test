@@ -447,9 +447,18 @@ function renderResult() {
     const texts = result.displayTexts;
     const secondTexts = result.displayTexts.secondType;
     const worstTexts = result.displayTexts.worstType;
+    const isEgg = type.easterEgg === true;
 
     document.getElementById('resultModeKicker').textContent = result.modeKicker;
-    document.getElementById('resultTypeName').textContent = `${type.code}（${texts.finalType.cn}）`;
+
+    // 彩蛋人格 #1 特殊展示
+    const typeNameEl = document.getElementById('resultTypeName');
+    if (isEgg) {
+        typeNameEl.innerHTML = `🥚 ${type.code}（${texts.finalType.cn}）<span class="egg-badge">✨ 隐藏人格解锁</span>`;
+    } else {
+        typeNameEl.textContent = `${type.code}（${texts.finalType.cn}）`;
+    }
+
     document.getElementById('matchBadge').textContent = result.badge;
     document.getElementById('resultTypeSub').textContent = result.sub;
     document.getElementById('resultDesc').textContent = texts.finalType.desc;
@@ -468,7 +477,7 @@ function renderResult() {
         const g = selectedGender === 'female' ? 'female' : 'male';
         const avatarPath = `/avatars/${type.code}_${g}.png`;
         resultAvatar.innerHTML = `
-            <div class="avatar-frame avatar-${g}">
+            <div class="avatar-frame avatar-${g}${isEgg ? ' avatar-egg' : ''}">
                 <picture>
                     <source srcset="/avatars_webp/${type.code}_${g}.webp" type="image/webp">
                     <img src="${avatarPath}" alt="${texts.finalType.cn}" class="avatar-img"
@@ -478,6 +487,7 @@ function renderResult() {
                     <span class="avatar-gender-icon">${g === 'female' ? '♀' : '♂'}</span>
                 </div>
             </div>
+            ${isEgg ? '<div class="egg-unlock-flash">✦ 神秘人格已解锁 ✦</div>' : ''}
         `;
     }
 
@@ -568,9 +578,14 @@ function openShareModal(result) {
     if (!modal) return;
     const type = result.finalType;
     const texts = result.displayTexts.finalType;
+    const isEgg = type.easterEgg === true;
 
     document.getElementById('posterDescText').textContent = texts.intro;
-    document.getElementById('posterCharTitle').textContent = `${type.code} · ${texts.cn}`;
+    if (isEgg) {
+        document.getElementById('posterCharTitle').innerHTML = `🥚 ${type.code} · ${texts.cn} <span class="egg-badge" style="font-size:12px">✨ 隐藏人格</span>`;
+    } else {
+        document.getElementById('posterCharTitle').textContent = `${type.code} · ${texts.cn}`;
+    }
     document.getElementById('posterCharDesc').textContent = texts.desc;
     document.getElementById('posterDate').textContent = new Date().toLocaleDateString('zh-CN').replace(/\//g, '.');
 

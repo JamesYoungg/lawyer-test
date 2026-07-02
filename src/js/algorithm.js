@@ -33,19 +33,21 @@ function computeTheoreticalBounds(questions) {
 
 /**
  * 把原始累加分对称归一化到 [-10, 10]
- * 分母取正负边界中绝对值较大的那个，保证 +10 和 -10 对称
+ * 正负独立归一化：正向分映射到 [0, 10]，负向分映射到 [-10, 0)
+ * 解决正负边界不对称时（如 ability +88 / -32）一侧被不合理压缩的问题
  */
 function normalizeScores(rawScores, bounds) {
     const normalized = {};
     dimensionOrder.forEach(dim => {
         const raw = rawScores[dim];
         const pos = bounds.maxPerDim[dim];
-        const neg = Math.abs(bounds.minPerDim[dim]);
-        const denom = Math.max(pos, neg);
-        if (denom === 0) {
+        const neg = bounds.minPerDim[dim];
+        if (pos === 0 && neg === 0) {
             normalized[dim] = 0;
+        } else if (raw >= 0) {
+            normalized[dim] = pos === 0 ? 0 : Math.min(10, (raw / pos) * 10);
         } else {
-            normalized[dim] = Math.max(-10, Math.min(10, (raw / denom) * 10));
+            normalized[dim] = neg === 0 ? 0 : Math.max(-10, (raw / Math.abs(neg)) * 10);
         }
     });
     return normalized;
@@ -127,52 +129,43 @@ export function computeResult(answers, questions, gender = 'male') {
 
     const userVector = dimensionOrder.map(dim => normalized[dim]);
 
-    // 3. 计算与每种人格的距离，排名
+    // ── 3. 安全网 → 距离加权 ──
+    // 计算每个人格的距离调整值（正值 = 惩罚，负值 = 增益）
+    const ADJ = {};
+    PERSONA_ENTRIES.forEach(p => { ADJ[p.code] = 0; });
+
+    // 低节奏感安全网：用户节奏极慢(-5)且边界低(<=0)时，所有高节奏人格(+6)被抑制
+    if (normalized.rhythm <= -5 && normalized.boundary <= 0) {
+        PERSONA_ENTRIES.forEach(p => {
+            if (p.v[1] > -2) ADJ[p.code] += 8;
+        });
+    }
+
+    // 暗夜孤狼安全网：用户高冲突(>=3)+高边界(>=3)+高能力(>=3)+低扩张(<=-2)+低节奏(<0)，增益 HFIP
+    if (normalized.conflict >= 3 && normalized.boundary >= 3 && normalized.ability >= 3 && normalized.expansion <= -2 && normalized.rhythm < 0) {
+        ADJ['HFIP'] -= 6;
+    }
+
+    // 修行隐士安全网：用户冲突 <= -5 且 节奏 <= -4，增益 SFIP
+    if (normalized.conflict <= -5 && normalized.rhythm <= -4) {
+        ADJ['SFIP'] -= 6;
+    }
+
+    // 4. 计算加权的距离与所有人格匹配
     const ranked = PERSONA_ENTRIES.map(persona => {
-        const dist = euclideanDistance(userVector, persona.v);
+        const baseDist = euclideanDistance(userVector, persona.v);
+        const adj = ADJ[persona.code] || 0;
+        const adjustedDist = baseDist + adj;
         const strength = matchStrength(userVector, persona.v);
         const maxPossible = Math.sqrt(7 * 400); // 7 维 × (20)^2 最大跨度
-        const similarity = Math.max(0, Math.round((1 - dist / maxPossible) * 100));
-        return { ...persona, distance: dist, matchStrength: strength, similarity };
+        const similarity = Math.max(0, Math.round((1 - baseDist / maxPossible) * 100));
+        return { ...persona, distance: baseDist, adjustedDistance: adjustedDist, matchStrength: strength, similarity };
     }).sort((a, b) => {
+        if (a.adjustedDistance !== b.adjustedDistance) return a.adjustedDistance - b.adjustedDistance;
         if (a.distance !== b.distance) return a.distance - b.distance;
         if (a.matchStrength !== b.matchStrength) return b.matchStrength - a.matchStrength;
         return b.similarity - a.similarity;
     });
-
-    // 低节奏感安全网：如果用户节奏 <= -5 且边界 <= 0，
-    // 但第一名却是高节奏人格，则把最佳低节奏人格提到第一
-    if (normalized.rhythm <= -5 && normalized.boundary <= 0) {
-        const bestLowRhythm = ranked.find(p => p.v[1] <= -2);
-        if (bestLowRhythm && ranked[0].v[1] > -2) {
-            const idx = ranked.indexOf(bestLowRhythm);
-            if (idx > 0) {
-                const [item] = ranked.splice(idx, 1);
-                ranked.unshift(item);
-            }
-        }
-    }
-
-    // 暗夜孤狼安全网：高冲突(>=3) + 高边界(>=3) + 高能力(>=3) + 低扩张(<=-2) + 低节奏(< 0)
-    if (normalized.conflict >= 3 && normalized.boundary >= 3 && normalized.ability >= 3 && normalized.expansion <= -2 && normalized.rhythm < 0) {
-        const hfipIdx = ranked.findIndex(p => p.code === 'HFIP');
-        if (hfipIdx > 0) {
-            const [item] = ranked.splice(hfipIdx, 1);
-            ranked.unshift(item);
-        }
-    }
-
-    // 修行隐士安全网：冲突 <= -5、节奏 <= -4
-    if (normalized.conflict <= -5 && normalized.rhythm <= -4) {
-        const sfip = PERSONA_ENTRIES.find(p => p.code === 'SFIP');
-        if (sfip && ranked[0].code !== 'SFIP') {
-            const idx = ranked.indexOf(sfip);
-            if (idx > 0) {
-                const [item] = ranked.splice(idx, 1);
-                ranked.unshift(item);
-            }
-        }
-    }
 
     const best = ranked[0];
     const second = ranked[1];
